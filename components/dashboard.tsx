@@ -10,11 +10,11 @@ type DashboardProps = {
   warEntries: WarEntry[];
 };
 
-type FilterRange = '7d' | '30d' | 'all';
+type FilterRange = 'current' | '7d' | '30d' | 'all';
 
 export default function Dashboard({ clanName, clanTag, members, warEntries }: DashboardProps) {
   const [query, setQuery] = useState('');
-  const [range, setRange] = useState<FilterRange>('7d');
+  const [range, setRange] = useState<FilterRange>('current');
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -44,6 +44,11 @@ export default function Dashboard({ clanName, clanTag, members, warEntries }: Da
   }, [members, lowerQuery]);
 
   const filteredWarEntries = useMemo(() => {
+    if (range === 'current') {
+      const current = warEntries.find((entry) => entry.id.startsWith('current-'));
+      return current ? [current] : [];
+    }
+
     if (range === 'all') return warEntries;
 
     const now = new Date();
@@ -125,6 +130,16 @@ export default function Dashboard({ clanName, clanTag, members, warEntries }: Da
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <h2 className="text-xl font-semibold">Guerre de Clans (River Race)</h2>
             <div className="flex gap-2">
+              <button
+                onClick={() => setRange('current')}
+                className={`rounded-lg px-3 py-1.5 text-sm ${
+                  range === 'current'
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-100'
+                }`}
+              >
+                Guerre en cours
+              </button>
               <button
                 onClick={() => setRange('7d')}
                 className={`rounded-lg px-3 py-1.5 text-sm ${
