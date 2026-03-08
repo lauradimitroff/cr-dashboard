@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.clashroyale.com/v1';
+const BASE_URL = process.env.CLASH_ROYALE_API_BASE_URL ?? 'https://api.clashroyale.com/v1';
 
 export type ClanMember = {
   tag: string;
